@@ -1,7 +1,18 @@
-const validator = require('validator');
+const chalk = require('chalk');
 const getNotes = require('./notes');
+const log = console.log;
+const error = chalk.bold.red.inverse;
+const warning = chalk.keyword('orange');
+const txt = chalk.greenBright;
+
 
 const msg = getNotes();
-console.log(msg);
+log(txt(msg));
+log(warning(msg));
+log(error(msg));
 
-console.log(validator.isURL('https/mead.io'));
+
+
+
+
+
