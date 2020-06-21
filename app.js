@@ -1,0 +1,1 @@
+noteApp = require('./notes-app');

@@ -1,6 +1,4 @@
-
-
-function getNotes() {
+const getNotes = function() {
     return "Your notes...";
 }
 
