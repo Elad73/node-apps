@@ -18,6 +18,7 @@
   "homepage": "https://github.com/Elad73/node-apps#readme",
   "dependencies": {
     "chalk": "^4.1.0",
-    "validator": "^13.1.1"
+    "validator": "^13.1.1",
+    "yargs": "^15.3.1"
   }
 }
