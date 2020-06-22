@@ -50,7 +50,23 @@ const loadNotes = function () {
     }
 }
 
+const removeNote = function (title) {
+    const notes = loadNotes(); 
+    const newNotes = notes.filter (function (note) {
+        if(note.title !== title) return note;
+    })
+
+    if (newNotes.length === notes.length){
+        log(warning('No title found to remove!'));
+    }
+    else {
+        saveNotes(newNotes);
+        log(txt('Note title was removed!'));
+    }
+}
+
 module.exports = {
     getNotes: getNotes,
-    addNote: addNote
+    addNote: addNote,
+    removeNote: removeNote
 }
