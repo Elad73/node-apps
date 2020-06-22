@@ -8,7 +8,7 @@ const txt = chalk.greenBright;
 //apps parameters
 const yargs = require('yargs');
 
-const getNotes = require('./notes');
+const notes = require('./notes');
 
 //Create add command
 yargs.command({
@@ -27,8 +27,7 @@ yargs.command({
         }
     },
     handler: function (argv) {
-        msg = txt('Title: ', JSON.stringify(argv.title), '\nBody: ', JSON.stringify(argv.body));
-        console.log(msg);
+        notes.addNote(argv.title, argv.body);
     }    
 });
 
