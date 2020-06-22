@@ -1,1 +1,3 @@
-noteApp = require('./notes-app');
+//noteApp = require('./notes-app');
+
+weatherApp = require('./weather-app');

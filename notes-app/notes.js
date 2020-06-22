@@ -1,10 +1,5 @@
 const fs = require('fs');
-//logging
-const chalk = require('chalk');
-const log = console.log;
-const error = chalk.bold.red.inverse;
-const warning = chalk.keyword('orange');
-const txt = chalk.greenBright;
+const globals = require('../globals');
 
 const notesFile = './notes-app/notes.json';
 
@@ -21,10 +16,10 @@ const addNote = (title, body) => {
         })
 
         saveNotes(notes);
-        log(txt('New note added successfuly.'));
+        globals.log(globals.txt('New note added successfuly.'));
     }
     else {
-        log(warning('Note title taken!'));
+        globals.log(globals.warning('Note title taken!'));
     }
 }
 
@@ -49,21 +44,21 @@ const removeNote = title => {
     const newNotes = notes.filter ( note => note.title !== title );
 
     if (newNotes.length === notes.length){
-        log(warning('No title found to remove!'));
+        globals.log(globals.warning('No title found to remove!'));
     }
     else {
         saveNotes(newNotes);
-        log(txt('Note title was removed!'));
+        globals.log(globals.txt('Note title was removed!'));
     }
 }
 
-const listNotes = () => loadNotes().forEach( note => log(txt(note.title + ': ' + note.body)) );
+const listNotes = () => loadNotes().forEach( note => globals.log(globals.txt(note.title + ': ' + note.body)) );
 
 const readNote = (title) => {
     const note = loadNotes().find( note => note.title === title);
 
-    if (note) log(txt(note.title + ': ' + note.body));
-    else log(warning("The title does not exist!"));
+    if (note) globals.log(globals.txt(note.title + ': ' + note.body));
+    else globals.log(globals.warning("The title does not exist!"));
 }
 
 

@@ -1,10 +1,3 @@
-//logging
-const log = console.log;
-const chalk = require('chalk');
-const error = chalk.bold.red.inverse;
-const warning = chalk.keyword('orange');
-const txt = chalk.greenBright;
-
 //apps parameters
 const yargs = require('yargs');
 
@@ -75,22 +68,5 @@ yargs.command({
 
 
 yargs.parse();
-
-// // add, remove, read, list
-// switch (command) {
-//     case 'add':
-//         log(txt('this is an add command'));
-//         break;
-//     case 'remove':
-//         log(txt('this is a remove command'));
-//         break;
-//     default:
-//         log(txt('no command was eneterd'));
-// }
-
-
-
-
-
 
 
