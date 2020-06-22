@@ -53,7 +53,7 @@ const loadNotes = function () {
 const removeNote = function (title) {
     const notes = loadNotes(); 
     const newNotes = notes.filter (function (note) {
-        if(note.title !== title) return note;
+        return note.title !== title;
     })
 
     if (newNotes.length === notes.length){
