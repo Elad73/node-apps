@@ -9,8 +9,6 @@ const txt = chalk.greenBright;
 const notesFile = './notes-app/notes.json';
 
 
-const getNotes = () => "Your notes...!!!";
-
 const addNote = (title, body) => {
     const notes = loadNotes();
     const duplicateNote = notes.find( note => note.title === title);
@@ -70,7 +68,6 @@ const readNote = (title) => {
 
 
 module.exports = {
-    getNotes: getNotes,
     addNote: addNote,
     removeNote: removeNote,
     listNotes: listNotes,
