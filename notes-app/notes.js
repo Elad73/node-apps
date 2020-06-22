@@ -9,17 +9,13 @@ const txt = chalk.greenBright;
 const notesFile = './notes-app/notes.json';
 
 
-const getNotes = function() {
-    return "Your notes...!!!";
-}
+const getNotes = () => "Your notes...!!!";
 
-const addNote = function (title, body) {
+const addNote = (title, body) => {
     const notes = loadNotes();
-    const duplicateNotes = notes.filter(function (note) {
-        return note.title === title;
-    })
+    const duplicateNote = notes.find( note => note.title === title);
 
-    if (duplicateNotes.length === 0)
+    if (!duplicateNote)
     {
         notes.push({
             title: title,
@@ -34,12 +30,12 @@ const addNote = function (title, body) {
     }
 }
 
-const saveNotes = function(notes) {
+const saveNotes = notes => {
     const dataJSON = JSON.stringify(notes);
     fs.writeFileSync(notesFile, dataJSON);
 }
 
-const loadNotes = function () {
+const loadNotes = () => {
     try {
         const dataBuffer = fs.readFileSync(notesFile);
         const dataJSON = dataBuffer.toString();
@@ -50,11 +46,9 @@ const loadNotes = function () {
     }
 }
 
-const removeNote = function (title) {
+const removeNote = title => {
     const notes = loadNotes(); 
-    const newNotes = notes.filter (function (note) {
-        return note.title !== title;
-    })
+    const newNotes = notes.filter ( note => note.title !== title );
 
     if (newNotes.length === notes.length){
         log(warning('No title found to remove!'));
@@ -65,8 +59,20 @@ const removeNote = function (title) {
     }
 }
 
+const listNotes = () => loadNotes().forEach( note => log(txt(note.title + ': ' + note.body)) );
+
+const readNote = (title) => {
+    const note = loadNotes().find( note.title === title);
+
+    if (note) log(txt(note.title + ': ' + note.body));
+    else log(warning("The title does not exist!"));
+}
+
+
 module.exports = {
     getNotes: getNotes,
     addNote: addNote,
-    removeNote: removeNote
+    removeNote: removeNote,
+    listNotes: listNotes,
+    readNote: readNote
 }
