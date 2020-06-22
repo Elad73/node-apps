@@ -62,7 +62,7 @@ const removeNote = title => {
 const listNotes = () => loadNotes().forEach( note => log(txt(note.title + ': ' + note.body)) );
 
 const readNote = (title) => {
-    const note = loadNotes().find( note.title === title);
+    const note = loadNotes().find( note => note.title === title);
 
     if (note) log(txt(note.title + ': ' + note.body));
     else log(warning("The title does not exist!"));
