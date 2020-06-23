@@ -4,17 +4,17 @@ const keys = require('../../config/keys');
 const serviceUrl = "http://api.weatherstack.com/current?access_key=" + keys.weatherStackKey;
 
 const forcastRequest = (url, callback) => {
-    request({url: url, json:true}, (error, response) => {
+    request({url, json:true}, (error, {body} = {}) => {
         if(error) {
             callback("Unable to connect to weather services!", undefined);
-        } else if(response.body.error) {
+        } else if(body.error) {
             callback("Unable to find location!", undefined);
         }
         else {
             callback(undefined, {
-                temperature: response.body.current.temperature,
-                desc: response.body.current.weather_descriptions[0],
-                feelslike: response.body.current.feelslike
+                temperature: body.current.temperature,
+                desc: body.current.weather_descriptions[0],
+                feelslike: body.current.feelslike
             });
         }
     });

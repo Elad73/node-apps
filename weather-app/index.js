@@ -11,17 +11,17 @@ const location =process.argv[2];
 if (!location) {
     globals.log(globals.error("Please provide location!"));
 } else {
-    geocode( location, (error, locationData) => {
+    geocode( location, (error, {latitude, longitude, location} = {}) => {
         if (error) {
             return console.log(error);
         }
 
-        forcastByCoord(locationData.latitude, locationData.longitude, (error,forcastData) => {
+        forcastByCoord(latitude, longitude, (error,forcastData) => {
             if (error) {
                 return console.log(error);
             }
         
-            console.log(locationData.location);
+            console.log(location);
             console.log(forcastData);
         })
     });
