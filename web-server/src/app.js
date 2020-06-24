@@ -1,11 +1,19 @@
 const path = require('path');
 const express = require('express');
+
 const keys = require('../../config/keys');
 
 const app = express();
-const publicDirPath = path.join(__dirname, '../public');
 
+// Define paths for Express config
+const publicDirPath = path.join(__dirname, '../public');
+const viewsPath = path.join(__dirname, '../templates');
+
+// Setup handlebars engine and views location
 app.set('view engine', 'hbs');
+app.set('views', viewsPath);
+
+// Setup static directory to serve
 app.use(express.static(publicDirPath));
 
 app.get('', (req, res) => {
@@ -30,14 +38,12 @@ app.get('/help', (req, res) => {
     });
 });
 
-
 app.get('/weather', (req, res)=>{
     res.send({
         "forcast": "sunny",
         "location": 34
     });
 });
-
 
 app.listen(keys.expressPort, ()=>{
     console.log('Server is up on port '+ keys.expressPort);
