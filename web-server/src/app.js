@@ -3,6 +3,8 @@ const express = require('express');
 const hbs = require('hbs');
 
 const keys = require('../../config/keys');
+const geocode = require('./utils/geocode');
+const {forcastByCity, forcastByCoord} = require('./utils/forcast');
 
 const app = express();
 
@@ -58,11 +60,27 @@ app.get('/weather', (req, res)=>{
 
     const location = req.query.city || req.query.location;
 
-    res.send({
-        "forcast": "sunny",
-        "location": location
+    geocode( location, (error, {latitude, longitude, location} = {}) => {
+        if (error) {
+            return res.send({ error });
+        }
+
+        forcastByCoord(latitude, longitude, (error,forcastData) => {
+            if (error) {
+                return res.send({ error });
+            }
+        
+            return res.send({
+                location,
+                forcast: forcastData
+            });
+        })
     });
 });
+
+       
+    
+
 
 
 app.get('*', (req, res) => {
@@ -78,5 +96,6 @@ app.get('*', (req, res) => {
 app.listen(keys.expressPort, ()=>{
     console.log('Server is up on port '+ keys.expressPort);
 });
+
 
 
