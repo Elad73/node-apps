@@ -50,9 +50,17 @@ app.get('/help/*', (req, res) => {
 });
 
 app.get('/weather', (req, res)=>{
+    if(!(req.query.city || req.query.location)) {
+        return res.send({
+            error: 'You need to specify either city or location for getting a forcast.'
+        });
+    }
+
+    const location = req.query.city || req.query.location;
+
     res.send({
         "forcast": "sunny",
-        "location": 34
+        "location": location
     });
 });
 
