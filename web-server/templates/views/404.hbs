@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <link rel="icon" href="/img/portfolio-512_512-white.png">
+        <title>404</title>
         <link rel="stylesheet" href="/css/styles.css" >
     </head>
-    <body id="404" 
-          style="background-image: url(/img/404.jpg);  
-                 background-repeat: no-repeat;
-                 background-size: cover;
-                 background-color: rgb(244,244,244);"
-    >
+    <body>
+        <div class="main-content">
+             {{>header}}
+              <img class="img404" src={{imgSrc}}>
+        </div>
+        {{>footer}}
     </body>
 </html>

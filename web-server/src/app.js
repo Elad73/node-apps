@@ -42,8 +42,9 @@ app.get('/help', (req, res) => {
 });
 
 app.get('/help/*', (req, res) => {
-    res.render('help404', {
-        title: "Didn't find what you are looking for?",
+    res.render('404', {
+        title: "Bad turn...",
+        imgSrc: "/img/help404.png",
         authorName: 'Elad Ron'
     });
 });
@@ -58,7 +59,8 @@ app.get('/weather', (req, res)=>{
 
 app.get('*', (req, res) => {
     res.render('404', {
-        title: "About me",
+        title: "404",
+        imgSrc: "/img/404.jpg",
         authorName: 'Elad Ron'
     });
 });
