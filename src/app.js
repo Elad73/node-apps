@@ -52,7 +52,6 @@ app.get('/help/*', (req, res) => {
 });
 
 app.get('/weather', (req, res)=>{
-    console.log('inside weather API');
     if(!(req.query.city || req.query.location)) {
         return res.send({
             error: 'You need to specify either city or location for getting a forcast.'
@@ -60,7 +59,6 @@ app.get('/weather', (req, res)=>{
     }
 
     const location = req.query.city || req.query.location;
-    console.log('location from query string: ' + location);
 
     geocode( location, (error, {latitude, longitude, location} = {}) => {
         if (error) {
