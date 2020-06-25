@@ -2,7 +2,7 @@ const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
 
-const keys = require('../../config/keys');
+const keys = require('../config/keys');
 const geocode = require('./utils/geocode');
 const {forcastByCity, forcastByCoord} = require('./utils/forcast');
 

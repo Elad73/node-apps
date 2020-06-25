@@ -1,5 +1,5 @@
 const request = require('request');
-const keys = require('../../../config/keys');
+const keys = require('../../config/keys');
 
 const serviceUrl = "http://api.weatherstack.com/current?access_key=" + keys.weatherStackKey;
 

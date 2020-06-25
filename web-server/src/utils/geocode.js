@@ -1,5 +1,5 @@
 const request = require('request');
-const keys = require('../../../config/keys');
+const keys = require('../../config/keys');
 
 //ToDo: improve the error handling without hard code
 const geocode = (address, callback) => {
