@@ -1,18 +1,18 @@
 console.log('Client side javascript code loaded');
 
-const weatherForm = document.querySelector('form');
-const search      = document.querySelector('input');
-const messageOne  = document.querySelector('#message-1');
-const messageTwo  = document.querySelector('#message-2');
-const forecastImg   = document.querySelector('#forecastImg');
-const br = document.createElement("br");
+const weatherForm  = document.querySelector('form');
+const search       = document.querySelector('input');
+const messageOne   = document.querySelector('#message-1');
+const messageTwo   = document.querySelector('#message-2');
+const forecastImg  = document.querySelector('#forecastImg');
 
 weatherForm.addEventListener('submit', (e)=> {
     e.preventDefault();
     
-    messageOne.textContent = 'Loading...';
-    messageTwo.textContent = '';
-    forecastImg.src = '';
+    messageOne.textContent    = 'Loading...';
+    messageTwo.textContent    = '';
+    forecastImg.src           = '';
+    forecastImg.style.display = 'none';
 
  
     const location = search.value;
@@ -24,11 +24,13 @@ weatherForm.addEventListener('submit', (e)=> {
             } else {
                 messageOne.textContent = data.location;
                 
+                messageTwo.textContent += 'Localtime: ' + data.forcast.localtime + '; ';
                 messageTwo.textContent += 'Temperature: ' + data.forcast.temperature + '; ';
                 messageTwo.textContent += 'Weather: ' + data.forcast.desc + '; ';
                 messageTwo.textContent += 'humidity: ' + data.forcast.humidity+ '; ';
                 messageTwo.textContent += 'Feels like: ' + data.forcast.feelslike;
 
+                forecastImg.style.display = 'block';
                 forecastImg.src = data.forcast.weather_icon;
             }
         })

@@ -12,6 +12,7 @@ const forcastRequest = (url, callback) => {
         }
         else {
             callback(undefined, {
+                localtime: body.location.localtime,
                 temperature: body.current.temperature,
                 desc: body.current.weather_descriptions[0],
                 humidity: body.current.humidity,
