@@ -23,7 +23,7 @@ app.use(express.static(publicDirPath));
 
 app.get('', (req, res) => {
     res.render('index', {
-        title: "Weather",
+        title: "Portfolio",
         authorName: 'Elad Ron'
     });
 });
@@ -34,6 +34,14 @@ app.get('/about', (req, res) => {
         authorName: 'Elad Ron'
     });
 });
+
+app.get('/notes', (req, res) => {
+    res.render('notes', {
+        title: "Notes",
+        authorName: 'Elad Ron'
+    });
+});
+
 
 app.get('/help', (req, res) => {
     res.render('help', {
@@ -51,7 +59,14 @@ app.get('/help/*', (req, res) => {
     });
 });
 
-app.get('/weather', (req, res)=>{
+app.get('/weather', (req, res) => {
+    res.render('weather', {
+        title: "Weather",
+        authorName: 'Elad Ron'
+    });
+});
+
+app.get('/forecast', (req, res)=>{
     if(!(req.query.city || req.query.location)) {
         return res.send({
             error: 'You need to specify either city or location for getting a forcast.'

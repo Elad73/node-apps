@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>My Portfolio</title>
+        <link rel="icon" href="/img/portfolio-512_512-white.png">
+        <link rel="stylesheet" href="/css/styles.css" >
+        
+    </head>
+    <body>
+        <div class="main-content">
+            {{>header}}
+            <form id="weatherForm">
+                <p>Use this site to get your weather!</p>
+                <input placeholder="Location">
+                <button>search</button>
+            </form>
+
+            <p id="message-1"></p>
+            <p id="message-2"></p>
+            <img id="forecastImg">
+        </div>
+        
+        {{>footer}}
+        <script src="/js/weatherApp.js"></script>
+    </body>
+</html>

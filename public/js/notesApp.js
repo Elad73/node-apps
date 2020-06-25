@@ -1,12 +1,6 @@
-console.log('Client side javascript code loaded');
+const notesForm  = document.querySelector('#notesForm');
 
-const weatherForm  = document.querySelector('form');
-const search       = document.querySelector('input');
-const messageOne   = document.querySelector('#message-1');
-const messageTwo   = document.querySelector('#message-2');
-const forecastImg  = document.querySelector('#forecastImg');
-
-weatherForm.addEventListener('submit', (e)=> {
+notesForm.addEventListener('submit', (e)=> {
     e.preventDefault();
     
     messageOne.textContent    = 'Loading...';
