@@ -3,8 +3,10 @@ const keys = require('../../config/keys');
 
 //ToDo: improve the error handling without hard code
 const geocode = (address, callback) => {
+    console.log('inside geocode');
     const urlGeo = "https://api.mapbox.com/geocoding/v5/mapbox.places/" + encodeURIComponent(address) + ".json?limit=1&access_token=" + keys.mapBoxKey;
 
+    console.log('urlGeo: ' + urlGeo);
     request({url: urlGeo, json:true}, (error, { body } = {}) => {
         if(error) {
             callback("Unable to connect to location services!", undefined);
