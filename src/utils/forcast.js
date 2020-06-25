@@ -14,7 +14,9 @@ const forcastRequest = (url, callback) => {
             callback(undefined, {
                 temperature: body.current.temperature,
                 desc: body.current.weather_descriptions[0],
-                feelslike: body.current.feelslike
+                humidity: body.current.humidity,
+                feelslike: body.current.feelslike,
+                weather_icon: body.current.weather_icons[0]
             });
         }
     });
