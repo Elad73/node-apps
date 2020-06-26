@@ -1,10 +1,16 @@
 const path = require('path');
 const express = require('express');
 const hbs = require('hbs');
-
+require('./db/mongoose');
 const keys = require('../config/keys');
+
+// exports for weather app
 const geocode = require('./utils/geocode');
 const {forcastByCity, forcastByCoord} = require('./utils/forcast');
+
+// exports for tasks app
+const User = require('./models/user');
+const Task = require('./models/task');
 
 const app = express();
 
@@ -21,6 +27,10 @@ hbs.registerPartials(partialsPath);
 // Setup static directory to serve
 app.use(express.static(publicDirPath));
 
+app.use(express.json());
+
+
+// #region weather routes
 app.get('', (req, res) => {
     res.render('index', {
         title: "Portfolio",
@@ -34,6 +44,8 @@ app.get('/about', (req, res) => {
         authorName: 'Elad Ron'
     });
 });
+
+
 
 app.get('/notes', (req, res) => {
     res.render('notes', {
@@ -93,11 +105,6 @@ app.get('/forecast', (req, res)=>{
     });
 });
 
-       
-    
-
-
-
 app.get('*', (req, res) => {
     res.render('404', {
         title: "404",
@@ -106,7 +113,31 @@ app.get('*', (req, res) => {
     });
 });
 
+// #endregion
 
+//#region tasks routes
+
+app.post('/users', (req, res) => {
+    const user = new User(req.body);
+
+    user.save().then( ()=> {
+        res.status(201).send(user);
+    }).catch( (e)=> {
+        res.status(400).send(e);
+    });
+});
+
+app.post('/tasks', (req, res) => {
+    const task = new Task(req.body);
+
+    task.save().then( ()=> {
+        res.status(201).send(task);
+    }).catch( (e)=> {
+        res.status(400).send(e);
+    });
+});
+
+//#endregion
 
 app.listen(keys.expressPort, ()=>{
     console.log('Server is up on port '+ keys.expressPort);
