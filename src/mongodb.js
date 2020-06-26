@@ -25,22 +25,43 @@ MongoClient.connect(connectionURL, { useNewUrlParser: true }, (error, client) =>
     //     console.log(result.ops);
     // });
 
-    db.collection('users').insertMany([
+    // db.collection('users').insertMany([
+    //     {
+    //         name: 'Jen',
+    //         age: 38
+
+    //     }, {
+    //         name: 'Gunther',
+    //         age: 55
+    //     }
+    // ], (error, result)=> {
+    //     if (error) {
+    //         return console.log('Unable to insert many rows');
+    //     }
+
+    //     console.log(result.ops);
+
+    // });
+
+    const currentTasks = [
         {
-            name: 'Jen',
-            age: 38
+            description: "Water the plants",
+            completed: false
 
         }, {
-            name: 'Gunther',
-            age: 55
+            description: "add new design system",
+            completed: false
+        }, {
+            description: "write a blessing letter to Libi",
+            completed: true
         }
-    ], (error, result)=> {
+    ];
+    db.collection('tasks').insertMany(currentTasks, (error, result)=>{
         if (error) {
-            return console.log('Unable to insert many rows');
+            return console.log('Unable to add tasks to \'tasks\' collection');
         }
 
         console.log(result.ops);
-
     });
 });
 
