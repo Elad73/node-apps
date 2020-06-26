@@ -105,17 +105,35 @@ app.get('/forecast', (req, res)=>{
     });
 });
 
-app.get('*', (req, res) => {
-    res.render('404', {
-        title: "404",
-        imgSrc: "/img/404.jpg",
-        authorName: 'Elad Ron'
-    });
-});
 
 // #endregion
 
 //#region tasks routes
+
+app.get('/users', (req, res) => {
+    User.find({}).then( (users) => {
+        res.send(users);
+    }).catch( (e) => {
+        res.status(500).send();
+    });
+});
+
+app.get('/users/:id', (req, res) => {
+    const _id = req.params.id;
+    console.log(_id);
+
+    User.findById(_id).then( (user) => {
+        if(!user) {
+            console.log("user: " + user);
+            return res.status(404).send();
+        }
+        console.log("user: " + user);
+        res.send(user);
+    }).catch( (e) => {
+        console.log("inside error");
+        res.status(500).send();
+    });
+});
 
 app.post('/users', (req, res) => {
     const user = new User(req.body);
@@ -138,6 +156,15 @@ app.post('/tasks', (req, res) => {
 });
 
 //#endregion
+
+app.get('*', (req, res) => {
+    res.render('404', {
+        title: "404",
+        imgSrc: "/img/404.jpg",
+        authorName: 'Elad Ron'
+    });
+});
+
 
 app.listen(keys.expressPort, ()=>{
     console.log('Server is up on port '+ keys.expressPort);
