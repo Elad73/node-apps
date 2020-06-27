@@ -1,5 +1,6 @@
 const express = require('express');
 const User = require('../models/user');
+const auth = require('../middleware/auth');
 
 const router = new express.Router();
 
@@ -23,6 +24,13 @@ router.get('/users', async (req, res) => {
         res.status(500).send();
     }
 });
+
+// Getting users function with an async/await syntax
+// Adding the auth middleware to the request
+router.get('/users/me', auth , async (req, res) => {
+    res.send(req.user);
+});
+
 
 // Getting a user function with promise syntax
 // router.get('/users/:id', (req, res) => {

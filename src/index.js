@@ -25,6 +25,10 @@ app.use(express.static(publicDirPath));
 
 app.use(express.json());
 
+// app.use( (req, res, next) => {
+//     res.status(503).send('The app is under construction');
+// });
+
 // Setup routers
 app.use(weatherRouter);
 app.use(userRouter);
