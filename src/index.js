@@ -1,23 +1,19 @@
-const path = require('path');
+const path    = require('path');
 const express = require('express');
-const hbs = require('hbs');
+const hbs     = require('hbs');
+
 require('./db/mongoose');
-const keys = require('../config/keys');
-
-// exports for weather app
-const geocode = require('./utils/geocode');
-const {forcastByCity, forcastByCoord} = require('./utils/forcast');
-
-// exports for tasks app
-const User = require('./models/user');
-const Task = require('./models/task');
-
-const app = express();
+const keys          = require('../config/keys');
+const userRouter    = require('./routers/user');
+const taskRouter    = require('./routers/task');
+const weatherRouter = require('./routers/weather');
 
 // Define paths for Express config
 const publicDirPath = path.join(__dirname, '../public');
-const viewsPath = path.join(__dirname, '../templates/views');
-const partialsPath = path.join(__dirname, '../templates/partials');
+const viewsPath     = path.join(__dirname, '../templates/views');
+const partialsPath  = path.join(__dirname, '../templates/partials');
+
+const app = express();
 
 // Setup handlebars engine and views location
 app.set('view engine', 'hbs');
@@ -29,8 +25,13 @@ app.use(express.static(publicDirPath));
 
 app.use(express.json());
 
+// Setup routers
+app.use(weatherRouter);
+app.use(userRouter);
+app.use(taskRouter);
 
-// #region weather routes
+
+// #region MAIN ROUTES
 app.get('', (req, res) => {
     res.render('index', {
         title: "Portfolio",
@@ -45,15 +46,12 @@ app.get('/about', (req, res) => {
     });
 });
 
-
-
 app.get('/notes', (req, res) => {
     res.render('notes', {
         title: "Notes",
         authorName: 'Elad Ron'
     });
 });
-
 
 app.get('/help', (req, res) => {
     res.render('help', {
@@ -78,223 +76,6 @@ app.get('/weather', (req, res) => {
     });
 });
 
-app.get('/forecast', (req, res)=>{
-    if(!(req.query.city || req.query.location)) {
-        return res.send({
-            error: 'You need to specify either city or location for getting a forcast.'
-        });
-    }
-
-    const location = req.query.city || req.query.location;
-
-    geocode( location, (error, {latitude, longitude, location} = {}) => {
-        if (error) {
-            return res.send({ error });
-        }
-
-        forcastByCoord(latitude, longitude, (error,forcastData) => {
-            if (error) {
-                return res.send({ error });
-            }
-        
-            return res.send({
-                location,
-                forcast: forcastData
-            });
-        })
-    });
-});
-
-
-// #endregion
-
-//#region tasks routes
-
-// Getting users function with promise syntax
-// app.get('/users', (req, res) => {
-//     User.find({}).then( (users) => {
-//         res.send(users);
-//     }).catch( (e) => {
-//         res.status(500).send();
-//     });
-// });
-
-// Getting users function with an async/await syntax
-app.get('/users', async (req, res) => {
-
-    try {
-        const users = await User.find({});
-        res.send(users);
-    } catch (e) {
-        res.status(500).send();
-    }
-});
-
-// Getting a user function with promise syntax
-// app.get('/users/:id', (req, res) => {
-//     const _id = req.params.id;
-
-//     User.findById(_id).then( (user) => {
-//         if(!user) {
-//             return res.status(404).send();
-//         }
-//         res.send(user);
-//     }).catch( (e) => {
-//         res.status(500).send(e);
-//     });
-// });
-
-// Getting a user function an async/await syntax
-app.get('/users/:id', async (req, res) => {
-    const _id = req.params.id;
-
-    try {
-        const user = await User.findById(_id);
-        console.log('This is the user from the asynch await: ' + user);
-        if (!user) {
-            return res.status(404).send();
-        }
-
-        res.send(user);
-    } catch (e) {
-        res.status(500).send(e);
-    }
-});
-
-// Creating user function with promise syntax
-// app.post('/users', (req, res) => {
-//     const user = new User(req.body);
-
-//     user.save().then( ()=> {
-//         res.status(201).send(user);
-//     }).catch( (e)=> {
-//         res.status(400).send(e);
-//     });
-// });
-
-// Creating user function with an async/await syntax
-app.post('/users', async (req, res) => {
-    const user = new User(req.body);
-
-    try {
-        await user.save();
-        res.status(201).send(user);
-    } catch (e) {
-        res.status(400).send(e);
-    }
-});
-
-app.patch('/users/:id', async (req, res) => {
-    const updates = Object.keys(req.body); //extracting the keys of the body json from the request
-    const allowedUpdates = ['name', 'email', 'password', 'age']; // this is an array of all of the keys that allowed to be updated
-    const isValidOperation = updates.every( (update) => allowedUpdates.includes(update) ); //passing on each key and comaring it to the allowed array, if there is a key that does not exist return false.
-
-    if (!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid updates!'});
-    }
-
-    try {
-        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true});
-
-        if (!user) {
-            return res.status(404).send();
-        }
-
-        res.send(user);
-    } catch (e) {
-        res.status(400).send(e);
-    }
-});
-
-app.delete('/users/:id', async (req, res) => {
-    try {
-        const user = await User.findByIdAndDelete(req.params.id);
-
-        if (!user) {
-            return res.status(404).send()
-        }
-        
-        res.send(user);
-    } catch (e) {
-        res.status(500).send(e);
-    }
-});
-
-app.get('/tasks', async (req, res) => {
-   
-    try {
-        const tasks = await Task.find({});
-        res.send(tasks);
-    } catch (e) {
-        res.status(500).send();
-    }
-});
-
-app.get('/tasks/:id', async (req, res) => {
-    const _id = req.params.id;
-
-    try {
-        const task = await Task.findById(_id);
-        if(!task) {
-            return res.status(404).send();
-        }
-
-        res.send(task)
-    } catch (e) {
-        res.status(500).send(e);
-    }
-});
-
-app.post('/tasks', async (req, res) => {
-    const task = new Task(req.body);
-
-    try {
-        await task.save();
-        res.status(201).send(task);
-
-    } catch (e) {
-        res.status(400).send(e);
-    }
-});
-
-app.patch('/tasks/:id', async (req, res) => {
-    const updates = Object.keys(req.body); //extracting the keys of the body json from the request
-    const allowedUpdates = ['description', 'completion']; // this is an array of all of the keys that allowed to be updated
-    const isValidOperation = updates.every( (update) => allowedUpdates.includes(update) ); //passing on each key and comaring it to the allowed array, if there is a key that does not exist return false.
-
-    if (!isValidOperation) {
-        return res.status(400).send({ error: 'Invalid updates!'});
-    }
-
-    try {
-        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true});
-
-        if (!task) {
-            return res.status(404).send();
-        }
-
-        res.send(task);
-    } catch (e) {
-        res.status(400).send(e);
-    }
-});
-
-app.delete('/tasks/:id', async (req, res) => {
-    try {
-        const task = await Task.findByIdAndDelete(req.params.id);
-
-        if (!task) {
-            return res.status(404).send()
-        }
-        
-        res.send(task);
-    } catch (e) {
-        res.status(500).send(e);
-    }
-});
-
-//#endregion
-
 app.get('*', (req, res) => {
     res.render('404', {
         title: "404",
@@ -302,6 +83,8 @@ app.get('*', (req, res) => {
         authorName: 'Elad Ron'
     });
 });
+
+// #endregion
 
 
 app.listen(keys.expressPort, ()=>{
