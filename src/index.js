@@ -243,7 +243,27 @@ app.post('/tasks', async (req, res) => {
     }
 });
 
+app.patch('/tasks/:id', async (req, res) => {
+    const updates = Object.keys(req.body); //extracting the keys of the body json from the request
+    const allowedUpdates = ['description', 'completion']; // this is an array of all of the keys that allowed to be updated
+    const isValidOperation = updates.every( (update) => allowedUpdates.includes(update) ); //passing on each key and comaring it to the allowed array, if there is a key that does not exist return false.
 
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid updates!'});
+    }
+
+    try {
+        const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true});
+
+        if (!task) {
+            return res.status(404).send();
+        }
+
+        res.send(task);
+    } catch (e) {
+        res.status(400).send(e);
+    }
+});
 
 //#endregion
 
