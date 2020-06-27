@@ -97,6 +97,32 @@ router.post('/users/login', async (req, res) => {
     }
 });
 
+router.post('/users/logout', auth, async (req, res) => {
+    try {
+        // removing the current token from the user's tokens array
+        req.user.tokens = req.user.tokens.filter( (token) => {
+            return token.token !== req.token
+        })
+        await req.user.save();
+
+        res.send(); 
+    } catch (e) {
+        res.status(500).send();
+    }
+});
+
+router.post('/users/logoutall', auth, async (req, res) => {
+    try {
+        // removing the all of the tokens from the user's tokens array
+        req.user.tokens = [];
+        await req.user.save();
+
+        res.send(); 
+    } catch (e) {
+        res.status(500).send();
+    }
+});
+
 router.patch('/users/:id', async (req, res) => {
     const updates = Object.keys(req.body); //extracting the keys of the body json from the request
     const allowedUpdates = ['name', 'email', 'password', 'age']; // this is an array of all of the keys that allowed to be updated
