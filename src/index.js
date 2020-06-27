@@ -120,18 +120,14 @@ app.get('/users', (req, res) => {
 
 app.get('/users/:id', (req, res) => {
     const _id = req.params.id;
-    console.log(_id);
 
     User.findById(_id).then( (user) => {
         if(!user) {
-            console.log("user: " + user);
             return res.status(404).send();
         }
-        console.log("user: " + user);
         res.send(user);
     }).catch( (e) => {
-        console.log("inside error");
-        res.status(500).send();
+        res.status(500).send(e);
     });
 });
 
@@ -142,6 +138,27 @@ app.post('/users', (req, res) => {
         res.status(201).send(user);
     }).catch( (e)=> {
         res.status(400).send(e);
+    });
+});
+
+app.get('/tasks', (req, res) => {
+    Task.find({}).then( (tasks) => {
+        res.send(tasks);
+    }).catch( (e) => {
+        res.status(500).send();
+    });
+});
+
+app.get('/tasks/:id', (req, res) => {
+    const _id = req.params.id;
+
+    Task.findById(_id).then( (task) => {
+        if(!task) {
+            return res.status(404).send();
+        }
+        res.send(task);
+    }).catch( (e) => {
+        res.status(500).send(e);
     });
 });
 
