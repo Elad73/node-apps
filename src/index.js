@@ -184,6 +184,28 @@ app.post('/users', async (req, res) => {
     }
 });
 
+app.patch('/users/:id', async (req, res) => {
+    const updates = Object.keys(req.body); //extracting the keys of the body json from the request
+    const allowedUpdates = ['name', 'email', 'password', 'age']; // this is an array of all of the keys that allowed to be updated
+    const isValidOperation = updates.every( (update) => allowedUpdates.includes(update) ); //passing on each key and comaring it to the allowed array, if there is a key that does not exist return false.
+
+    if (!isValidOperation) {
+        return res.status(400).send({ error: 'Invalid updates!'});
+    }
+
+    try {
+        const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true});
+
+        if (!user) {
+            return res.status(404).send();
+        }
+
+        res.send(user);
+    } catch (e) {
+        res.status(400).send(e);
+    }
+});
+
 app.get('/tasks', async (req, res) => {
    
     try {
@@ -220,6 +242,8 @@ app.post('/tasks', async (req, res) => {
         res.status(400).send(e);
     }
 });
+
+
 
 //#endregion
 
