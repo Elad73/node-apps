@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 
-const Task = mongoose.model('Task', {
+const taskSchema = new mongoose.Schema({
     description: {
         type: String,
         trim: true,
@@ -12,5 +12,16 @@ const Task = mongoose.model('Task', {
         default: false
     }
 });
+
+// taskSchema.pre('save', async function (next) {
+//     // this gives us access to the individual that is about to be saved.
+//     const user = this;
+
+//     console.log('before saving the task to the db');
+
+//     next();
+// })
+
+const Task = mongoose.model('Task', taskSchema);
 
 module.exports = Task;
