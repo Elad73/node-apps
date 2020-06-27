@@ -1,6 +1,7 @@
 const mongoose  = require('mongoose');
 const validator = require('validator');
 const bcrypt    = require('bcryptjs');
+const jwt       = require('jsonwebtoken');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -39,9 +40,29 @@ const userSchema = new mongoose.Schema({
                 throw new Error('Password is invalid, can not include \'password\' in it!')
             }
         }
-    }
+    },
+    tokens: [{
+        token: {
+            type: String,
+            required: true
+        }
+    }]
 });
 
+// methods are accessible on the instances, sometimes called 'instance methods'.
+// we are using an async function and not an async arrow function since we want to use the 'this' binding, which we can not do with an arrow function.
+userSchema.methods.generateAuthToken = async function() {
+    const user  = this;
+    const token = jwt.sign({_id: user._id.toString()}, 'thisisachanceofalifetime');
+
+    // adding the newly generated token to the model and saving it to the db
+    user.tokens = user.tokens.concat({ token });
+    await user.save();
+    
+    return token;
+};
+
+// static methods are accessible on the model, sometimes called 'model methods'
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({email});
 
