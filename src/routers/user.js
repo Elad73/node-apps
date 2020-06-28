@@ -1,6 +1,6 @@
 const express = require('express');
-const User = require('../models/user');
-const auth = require('../middleware/auth');
+const User    = require('../models/user');
+const auth    = require('../middleware/auth');
 
 const router = new express.Router();
 
@@ -15,15 +15,16 @@ const router = new express.Router();
 // });
 
 // Getting users function with an async/await syntax
-router.get('/users', async (req, res) => {
+// Don't want to expose to the user a list of all of the users
+// router.get('/users', async (req, res) => {
 
-    try {
-        const users = await User.find({});
-        res.send(users);
-    } catch (e) {
-        res.status(500).send();
-    }
-});
+//     try {
+//         const users = await User.find({});
+//         res.send(users);
+//     } catch (e) {
+//         res.status(500).send();
+//     }
+// });
 
 // Getting users function with an async/await syntax
 // Adding the auth middleware to the request
@@ -123,7 +124,35 @@ router.post('/users/logoutall', auth, async (req, res) => {
     }
 });
 
-router.patch('/users/:id', async (req, res) => {
+// router.patch('/users/:id', async (req, res) => {
+//     const updates = Object.keys(req.body); //extracting the keys of the body json from the request
+//     const allowedUpdates = ['name', 'email', 'password', 'age']; // this is an array of all of the keys that allowed to be updated
+//     const isValidOperation = updates.every( (update) => allowedUpdates.includes(update) ); //passing on each key and comaring it to the allowed array, if there is a key that does not exist return false.
+
+//     if (!isValidOperation) {
+//         return res.status(400).send({ error: 'Invalid updates!'});
+//     }
+
+//     try {
+//         //const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true});
+
+//         // since findByIdAndUpdate function pass mongoose middleware, need manually create the update and save it through the middleware
+//         const user = await User.findByIdAndUpdate(req.params.id);
+
+//         updates.forEach((update) => user[update] = req.body[update]);
+//         await user.save();
+
+//         if (!user) {
+//             return res.status(404).send();
+//         }
+
+//         res.send(user);
+//     } catch (e) {
+//         res.status(400).send(e);
+//     }
+// });
+
+router.patch('/users/me', auth, async (req, res) => {
     const updates = Object.keys(req.body); //extracting the keys of the body json from the request
     const allowedUpdates = ['name', 'email', 'password', 'age']; // this is an array of all of the keys that allowed to be updated
     const isValidOperation = updates.every( (update) => allowedUpdates.includes(update) ); //passing on each key and comaring it to the allowed array, if there is a key that does not exist return false.
@@ -133,33 +162,39 @@ router.patch('/users/:id', async (req, res) => {
     }
 
     try {
-        //const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true});
-
-        // since findByIdAndUpdate function pass mongoose middleware, need manually create the update and save it through the middleware
-        const user = await User.findByIdAndUpdate(req.params.id);
+        // Getting the user from the req, after being authenticated at the middleware
+        const user = req.user;
 
         updates.forEach((update) => user[update] = req.body[update]);
         await user.save();
-
-        if (!user) {
-            return res.status(404).send();
-        }
-
         res.send(user);
     } catch (e) {
         res.status(400).send(e);
     }
 });
 
-router.delete('/users/:id', async (req, res) => {
-    try {
-        const user = await User.findByIdAndDelete(req.params.id);
+// We do not want to expose the userId!! need to block this method
+// router.delete('/users/:id', auth, async (req, res) => {
+//     try {
+//         const user = await User.findByIdAndDelete(req.params.id);
 
-        if (!user) {
-            return res.status(404).send()
-        }
+//         if (!user) {
+//             return res.status(404).send()
+//         }
         
-        res.send(user);
+//         res.send(user);
+//     } catch (e) {
+//         res.status(500).send(e);
+//     }
+// });
+
+router.delete('/users/me', auth, async (req, res) => {
+    try {
+        // We already authenticated the user with the middleware and attached the user to the request.
+        // In case the user is not found on the db, then the req.user will throw an error.
+        // Using the remove method on the mongoose document
+        await req.user.remove();
+        res.send(req.user);
     } catch (e) {
         res.status(500).send(e);
     }

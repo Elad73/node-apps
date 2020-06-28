@@ -62,6 +62,18 @@ userSchema.methods.generateAuthToken = async function() {
     return token;
 };
 
+// This is the public profile of the user. without the password and tokens array.
+// This method is called each time the object is being stringified
+userSchema.methods.toJSON = function () {
+    const user       = this; //getting the context of the user
+    const userObject = user.toObject();
+
+    delete userObject.password;
+    delete userObject.tokens;
+
+    return userObject;
+};
+
 // static methods are accessible on the model, sometimes called 'model methods'
 userSchema.statics.findByCredentials = async (email, password) => {
     const user = await User.findOne({email});
