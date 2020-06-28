@@ -1,9 +1,9 @@
 const express = require('express');
+const multer  = require('multer');
 const User    = require('../models/user');
 const auth    = require('../middleware/auth');
 
 const router = new express.Router();
-
 
 // Getting users function with promise syntax
 // router.get('/users', (req, res) => {
@@ -124,6 +124,7 @@ router.post('/users/logoutall', auth, async (req, res) => {
     }
 });
 
+
 // router.patch('/users/:id', async (req, res) => {
 //     const updates = Object.keys(req.body); //extracting the keys of the body json from the request
 //     const allowedUpdates = ['name', 'email', 'password', 'age']; // this is an array of all of the keys that allowed to be updated
@@ -197,6 +198,21 @@ router.delete('/users/me', auth, async (req, res) => {
         res.send(req.user);
     } catch (e) {
         res.status(500).send(e);
+    }
+});
+
+const upload = multer({
+    dest: 'images/avatars' // A name of the folder where all of the uploads should be stored
+});
+
+// Creating user function with an async/await syntax
+router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
+    const user = req.user;
+
+    try {
+        res.status(200).send({user});
+    } catch (e) {
+        res.status(400).send(e);
     }
 });
 

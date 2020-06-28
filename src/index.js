@@ -1,6 +1,7 @@
 const path    = require('path');
 const express = require('express');
 const hbs     = require('hbs');
+const multer  = require('multer');
 
 require('./db/mongoose');
 const keys          = require('../config/keys');
@@ -25,6 +26,14 @@ app.use(express.static(publicDirPath));
 
 app.use(express.json());
 
+const upload = multer({
+    dest: 'images' // A name of the folder where all of the uploads should be stored
+});
+app.post('/upload', upload.single('upload'), (req, res) => {
+    res.send();
+})
+
+// Example for maintanance message when the site it down!
 // app.use( (req, res, next) => {
 //     res.status(503).send('The app is under construction');
 // });
