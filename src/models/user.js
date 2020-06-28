@@ -49,6 +49,14 @@ const userSchema = new mongoose.Schema({
     }]
 });
 
+// This is not a real field stored in the db, it is just for mongoose to figure out who owns what and how they are related
+// This is a reference between the user and the task on a virtual
+userSchema.virtual('userTasks', {
+    ref: 'Task',
+    localField: '_id', // the local field _id is the relationship between the task owner (which is also a user id) and the local field '_id'
+    foreignField: 'owner'
+})
+
 // methods are accessible on the instances, sometimes called 'instance methods'.
 // we are using an async function and not an async arrow function since we want to use the 'this' binding, which we can not do with an arrow function.
 userSchema.methods.generateAuthToken = async function() {

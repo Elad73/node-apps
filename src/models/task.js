@@ -10,6 +10,11 @@ const taskSchema = new mongoose.Schema({
     completion: {
         type: Boolean, 
         default: false
+    },
+    owner: {
+        type: mongoose.SchemaTypes.ObjectId,
+        require: true,
+        ref: 'User' // this is the relationship to the User model
     }
 });
 
