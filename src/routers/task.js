@@ -6,14 +6,15 @@ const router = new express.Router();
 
 
 // GET /tasks?completed=false
+// limit, skip - options for making pagination: GET /tasks?limit=10&skip=4
 router.get('/tasks', auth, async (req, res) => {
    
     try {
-        //const tasks = await Task.find({ owner: req.user._id}); // Option 1
+        //const tasks = await Task.find({ owner: req.user._id}); // This is option 1 for getting the tasks of an authenticated user
         //res.send(tasks);
 
         const match =  {};
-        
+
         if(req.query.completion) {
             match.completion = req.query.completion === 'true';
         };
@@ -21,7 +22,11 @@ router.get('/tasks', auth, async (req, res) => {
 
         await req.user.populate({
             path: 'userTasks',
-            match    
+            match,
+            options: {
+                limit: parseInt(req.query.limit), // If limit isn't provided or is not a number, it's going to be ignored by mongoose
+                skip:  parseInt(req.query.skip)
+            }    
         }).execPopulate()
         res.send(req.user.userTasks);
         
