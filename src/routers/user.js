@@ -202,7 +202,17 @@ router.delete('/users/me', auth, async (req, res) => {
 });
 
 const upload = multer({
-    dest: 'images/avatars' // A name of the folder where all of the uploads should be stored
+    dest: 'images/avatars', // A name of the folder where all of the uploads should be stored
+    limits: {
+        fileSize: 1000000 // Size in bytes 1000000 = 1M bytes = 1Mb
+    },
+    fileFilter(req, file, cb) {
+        if (!file.originalname.match(/\.(doc|docx)$/)) {
+            return cb(new Error('Please upload a Word document'));    
+        }
+        
+        cb(undefined, true);
+    }
 });
 
 // Creating user function with an async/await syntax
@@ -210,7 +220,7 @@ router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) 
     const user = req.user;
 
     try {
-        res.status(200).send({user});
+        res.send();
     } catch (e) {
         res.status(400).send(e);
     }
