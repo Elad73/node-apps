@@ -7,16 +7,23 @@ const router = new express.Router();
 
 // GET /tasks?completed=false
 // limit, skip - options for making pagination: GET /tasks?limit=10&skip=4
+// GET /tasks?sortBy=createdAt:desc
 router.get('/tasks', auth, async (req, res) => {
    
     try {
         //const tasks = await Task.find({ owner: req.user._id}); // This is option 1 for getting the tasks of an authenticated user
         //res.send(tasks);
 
-        const match =  {};
+        const match = {};
+        const sort  = {};
 
         if(req.query.completion) {
             match.completion = req.query.completion === 'true';
+        };
+
+        if (req.query.sortBy) {
+            const parts = req.query.sortBy.split(':');
+            sort[parts[0]] = parts[1] === 'desc' ? -1 : 1; // We can not activate sort.createdAt since the client sends createdAt with ':' and sort directin (asc, desc) so we add it to sort[parts[0]]
         };
 
 
@@ -25,7 +32,8 @@ router.get('/tasks', auth, async (req, res) => {
             match,
             options: {
                 limit: parseInt(req.query.limit), // If limit isn't provided or is not a number, it's going to be ignored by mongoose
-                skip:  parseInt(req.query.skip)
+                skip:  parseInt(req.query.skip),
+                sort
             }    
         }).execPopulate()
         res.send(req.user.userTasks);
