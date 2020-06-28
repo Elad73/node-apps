@@ -48,6 +48,8 @@ const userSchema = new mongoose.Schema({
             required: true
         }
     }]
+}, {
+    timestamps: true // Enabling timestamps, by default they are set to false
 });
 
 // This is not a real field stored in the db, it is just for mongoose to figure out who owns what and how they are related
