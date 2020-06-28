@@ -2,6 +2,7 @@ const mongoose  = require('mongoose');
 const validator = require('validator');
 const bcrypt    = require('bcryptjs');
 const jwt       = require('jsonwebtoken');
+const Task      = require('../models/task');
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -113,6 +114,14 @@ userSchema.pre('save', async function (next) {
     next();
 })
 
+// Delete user tasks when user is removed
+// Thre reason we are not using the arrow function is because we want the 'this' context
+userSchema.pre('remove', async function (next) {
+    // this gives us access to the individual that is about to be saved.
+    const user = this;
+    await Task.deleteMany({ owner: user._id });
+    next();
+})
 
 const User = mongoose.model('User', userSchema);
 
