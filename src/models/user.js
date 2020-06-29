@@ -84,6 +84,7 @@ userSchema.methods.toJSON = function () {
 
     delete userObject.password;
     delete userObject.tokens;
+    delete userObject.avatar; // There is no need to send the avatar, we have a route for it, no need to add weight to the stringify
 
     return userObject;
 };
