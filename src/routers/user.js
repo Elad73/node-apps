@@ -218,12 +218,10 @@ const upload = multer({
 // Creating user function with an async/await syntax
 router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
     const user = req.user;
-
-    try {
-        res.send();
-    } catch (e) {
-        res.status(400).send(e);
-    }
+    
+    res.send();
+}, (error, req, res, next) => {
+    res.status(400).send({error: error.message});
 });
 
 
