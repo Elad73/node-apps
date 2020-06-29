@@ -1,8 +1,9 @@
-const express = require('express');
-const multer  = require('multer');
-const sharp   = require('sharp');
-const User    = require('../models/user');
-const auth    = require('../middleware/auth');
+const express             = require('express');
+const multer              = require('multer');
+const sharp               = require('sharp');
+const User                = require('../models/user');
+const auth                = require('../middleware/auth');
+const { sendWelcomeEmail, sendDeleteUserEmail} = require('../emails/account');
 
 const router = new express.Router();
 
@@ -82,6 +83,7 @@ router.post('/users', async (req, res) => {
 
     try {
         const token = await user.generateAuthToken();
+        sendWelcomeEmail(user.email, user.name);
         res.status(201).send({user, token});
     } catch (e) {
         res.status(400).send(e);
@@ -196,6 +198,7 @@ router.delete('/users/me', auth, async (req, res) => {
         // In case the user is not found on the db, then the req.user will throw an error.
         // Using the remove method on the mongoose document
         await req.user.remove();
+        sendDeleteUserEmail(req.user.email, req.user.name);
         res.send(req.user);
     } catch (e) {
         res.status(500).send(e);
