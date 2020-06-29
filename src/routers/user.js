@@ -202,7 +202,7 @@ router.delete('/users/me', auth, async (req, res) => {
 });
 
 const upload = multer({
-    dest: 'images/avatars', // A name of the folder where all of the uploads should be stored
+    //dest: 'images/avatars', // A name of the folder where all of the uploads should be stored
     limits: {
         fileSize: 1000000 // Size in bytes 1000000 = 1M bytes = 1Mb
     },
@@ -215,13 +215,18 @@ const upload = multer({
     }
 });
 
-// Creating user function with an async/await syntax
 router.post('/users/me/avatar', auth, upload.single('avatar'), async (req, res) => {
-    const user = req.user;
-    
+    req.user.avatar = req.file.buffer // Since we have removed the 'dest' param from the multer, the multer librarty returns the file on 'req.file'
+    await req.user.save();
     res.send();
 }, (error, req, res, next) => {
     res.status(400).send({error: error.message});
+});
+
+router.delete('/users/me/avatar', auth, async (req, res) => {
+    req.user.avatar = undefined;
+    await req.user.save();
+    res.send();
 });
 
 
