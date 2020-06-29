@@ -5,6 +5,7 @@ module.exports = {
     mapBoxKey:       process.env.MAPBOX_KEY,
     expressPort:     process.env.PORT,
     sendGridKey:     process.env.SEND_GRID_KEY,
-    redirectDomain:  process.env.REDIRECT_DOMAIN
+    mongodbConStr:   process.env.MONGODB_CON_STR,
+    jwtSecret:       process.env.JWT_SECRET
   };
   

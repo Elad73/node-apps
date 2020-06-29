@@ -3,6 +3,8 @@ const validator = require('validator');
 const bcrypt    = require('bcryptjs');
 const jwt       = require('jsonwebtoken');
 const Task      = require('../models/task');
+const keys      = require('../../config/keys');
+const jwtSecret = keys.jwtSecret;
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -67,7 +69,7 @@ userSchema.virtual('userTasks', {
 // we are using an async function and not an async arrow function since we want to use the 'this' binding, which we can not do with an arrow function.
 userSchema.methods.generateAuthToken = async function() {
     const user  = this;
-    const token = jwt.sign({_id: user._id.toString()}, 'thisisachanceofalifetime');
+    const token = jwt.sign({_id: user._id.toString()}, jwtSecret);
 
     // adding the newly generated token to the model and saving it to the db
     user.tokens = user.tokens.concat({ token });
